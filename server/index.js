@@ -1,6 +1,6 @@
 const express = require ('express');
 const bodyParser = require('body-parser');
-const database = require('../database');
+const { Product } = require('../database');
 const app = express();
 
 let port = process.env.PORT;
@@ -12,12 +12,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
-app.get('/api/products/:id', (req, res) => {
-  database.getProductData((err, result) => {
-    if (err) throw err;
-    res.send(result);
-  })
+app.get('/api/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const productData = await Product.find({ id });
+  try {
+    res.send(productData);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+  // database.getProductData((err, result) => {
+  //   if (err) throw err;
+  //   res.send(result);
+  // }, 0);
 });
+
 
 app.listen(port, function() {
   console.log(`listening on port ${port}`);

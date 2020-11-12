@@ -9,39 +9,17 @@ const db = mongoose.connect(config.MONGO_URI, {
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.log(err));
 
-// const imageSchema = mongoose.Schema({
-//   url: String,
-//   desc: String
-// });
-
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
   id: Number,
   name: String,
+  brand: String,
   images: [String],
   reg_price: Number,
   discount_price: Number,
 });
 
-const Product = mongoose.model('ProductImage', productSchema);
-
-const seed = () => {
-  Product.deleteMany({});
-  const product = new Product(sampleProduct);
-
-  product.save((err, product) => {
-    if (err) return console.log(err)
-    else console.log('sampleProduct saved successfully');
-  });
-}
-
-const getProductData = (callback, id) => {
-  Product.where({ id }).findOne((err, product) => {
-    if (err) callback(err);
-    else callback(null, product)
-  })
-}
+const Product = mongoose.model('product', productSchema);
 
 module.exports = {
-  getProductData,
-  seed
+  Product
 };
